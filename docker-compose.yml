@@ -5,12 +5,12 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.100.0.0/16
+        - subnet: 10.100.1.0/16
 
 services:
   nginx:
     image: nginx:1.13
-    container_name: nginx
+    container_name: servernginx
     ports:
       - '80:80'
       - '443:443'
@@ -25,11 +25,11 @@ services:
     restart: always
     networks:
       default:
-        ipv4_address: 10.100.0.10
+        ipv4_address: 10.100.1.10
 
   php74:
     build: ./docker/php74
-    container_name: php74
+    container_name: interpreterphp74
     volumes:
       - ./:/var/www/html
       - ./docker/php74/php.ini:/usr/local/etc/php/php.ini
@@ -43,11 +43,11 @@ services:
     restart: always
     networks:
       default:
-        ipv4_address: 10.100.0.16
+        ipv4_address: 10.100.1.16
 
   mysql:
     image: mysql:5.7
-    container_name: mysql
+    container_name: databasemysql
     # ports:
     #    - '3306:3306'
     environment:
@@ -63,4 +63,4 @@ services:
     restart: always
     networks:
       default:
-        ipv4_address: 10.100.0.12
+        ipv4_address: 10.100.1.12
