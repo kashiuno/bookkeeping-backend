@@ -1,6 +1,7 @@
 FROM php:7.4-fpm
 
-RUN echo "deb http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list
+RUN echo "deb http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list \
+    echo "deb http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
