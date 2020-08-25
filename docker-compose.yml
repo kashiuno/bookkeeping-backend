@@ -24,7 +24,7 @@ services:
       - ./docker/httpd-php/apache2/configurations:/etc/apache2/conf-enabled
       - ./docker/httpd-php/apache2/hosts:/etc/apache2/sites-enabled
       - ./docker/httpd-php/php/php.ini:/etc/php/7.4/apache2/php.ini
-      - ./docker/httpd-php/apache2/logs:/var/log/apache2
+      - ./docker/var/log/apache2:/var/log/apache2
     restart: always
     networks:
       default:
