@@ -26,7 +26,7 @@ class RegisterFormRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'max:50', 'confirmed'],
+            'password' => ['required', 'string', 'between:8,50', 'confirmed'],
         ];
     }
 
@@ -36,15 +36,14 @@ class RegisterFormRequest extends FormRequest
             'name.required' => 'Field name is required',
             'name.string' => 'Field name mst be a string',
             'name.max:50' => 'Field name max size is 50 characters',
-            'email.require' => 'Field email is required',
+            'email.required' => 'Field email is required',
             'email.string' => 'Field email must be a string',
             'email.email' => 'Field email must be a valid email',
             'email.max:255' => 'Field email max size is 255 characters',
             'email.unique' => 'Field email must be an unique',
             'password.required' => 'Field password is required',
             'password.string' => 'Field password must be a string',
-            'password.min:8' => 'Field password must have min 8 characters',
-            'password.max:50' => 'Field password must have max 50 characters',
+            'password.between:8,50' => 'Field password must have min 8 characters and 50 characters',
             'password.confirmed' => 'Field password must have a valid confirmation',
         ];
     }
