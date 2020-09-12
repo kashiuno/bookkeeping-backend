@@ -17,6 +17,8 @@ class RegistrationTest extends TestCase
     private const TEST_VALID_PASSWORD = 'd549769e';
     private const TEST_VALID_PASSWORD_CONFIRMATION = 'd549769e';
 
+    private const TEST_INVALID_EXISTING_NAME = 'kashiuno';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -73,6 +75,34 @@ class RegistrationTest extends TestCase
                     'password' => ['Field password is required'],
                 ]
             ]);
+    }
+
+    public function testShouldReturnErrorAboutUniqueIfNameJustExist() {
+        $credentials = [
+            'name' => self::TEST_INVALID_EXISTING_NAME,
+            'email' => self::TEST_VALID_EMAIL,
+            'password' => self::TEST_VALID_PASSWORD,
+            'password_confirmation' => self::TEST_VALID_PASSWORD_CONFIRMATION,
+        ];
+
+        $this->makeRequest($credentials)
+            ->assertJsonFragment([
+                'errors' => [
+                    'name' => ['Name must be an unique']
+                ]
+            ]);
+    }
+
+    public function testShouldReturn_422ResponseIfValidationFail() {
+        $credentials = [
+            'name' => self::TEST_INVALID_EXISTING_NAME,
+            'email' => self::TEST_VALID_EMAIL,
+            'password' => self::TEST_VALID_PASSWORD,
+            'password_confirmation' => self::TEST_VALID_PASSWORD_CONFIRMATION,
+        ];
+
+        $this->makeRequest($credentials)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     private function makeRequest(array $credentials): TestResponse

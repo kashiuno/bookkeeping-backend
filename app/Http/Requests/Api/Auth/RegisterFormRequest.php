@@ -24,7 +24,7 @@ class RegisterFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'between:8,50', 'confirmed'],
         ];
@@ -36,6 +36,7 @@ class RegisterFormRequest extends FormRequest
             'name.required' => 'Field name is required',
             'name.string' => 'Field name mst be a string',
             'name.max:50' => 'Field name max size is 50 characters',
+            'name.unique' => 'Name must be an unique',
             'email.required' => 'Field email is required',
             'email.string' => 'Field email must be a string',
             'email.email' => 'Field email must be a valid email',
