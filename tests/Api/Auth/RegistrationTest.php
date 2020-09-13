@@ -77,7 +77,8 @@ class RegistrationTest extends TestCase
             ]);
     }
 
-    public function testShouldReturnErrorAboutUniqueIfNameJustExist() {
+    public function testShouldReturnErrorAboutUniqueIfNameJustExist()
+    {
         $credentials = [
             'name' => self::TEST_INVALID_EXISTING_NAME,
             'email' => self::TEST_VALID_EMAIL,
@@ -93,7 +94,8 @@ class RegistrationTest extends TestCase
             ]);
     }
 
-    public function testShouldReturn_422ResponseIfValidationFail() {
+    public function testShouldReturn_422ResponseIfValidationFail()
+    {
         $credentials = [
             'name' => self::TEST_INVALID_EXISTING_NAME,
             'email' => self::TEST_VALID_EMAIL,
