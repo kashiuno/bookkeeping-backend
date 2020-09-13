@@ -40,7 +40,7 @@ class LoginTest extends TestCase
 
         $this->testUser->delete();
 
-        $this->post('/api/login', $credentials)->assertUnauthorized();
+        $this->makeRequest($credentials)->assertUnauthorized();
     }
 
     public function testShouldReturnErrorsAndMessageInResponseIfUserNotExist()
@@ -52,7 +52,7 @@ class LoginTest extends TestCase
 
         $this->testUser->delete();
 
-        $this->post('/api/login', $credentials)
+        $this->makeRequest($credentials)
             ->assertExactJson([
                 'message' => 'Login or password are incorrect',
                 'errors' => 'Unauthorised',
@@ -66,7 +66,7 @@ class LoginTest extends TestCase
             'password' => 'password',
         ];
 
-        $this->post('/api/login', $credentials)->assertUnauthorized();
+        $this->makeRequest($credentials)->assertUnauthorized();
     }
 
     public function testShouldReturnErrorsAndMessageInResponseIfWrongPassword()
@@ -76,7 +76,7 @@ class LoginTest extends TestCase
             'password' => 'password',
         ];
 
-        $this->post('/api/login', $credentials)
+        $this->makeRequest($credentials)
             ->assertExactJson([
                 'message' => 'Login or password are incorrect',
                 'errors' => 'Unauthorised'
@@ -90,7 +90,7 @@ class LoginTest extends TestCase
             'password' => $this->testPassword,
         ];
 
-        $this->post('/api/login', $credentials)->assertOk();
+        $this->makeRequest($credentials)->assertOk();
     }
 
     public function testShouldReturnTokenTypeFieldIfLoginWasSuccess()
@@ -100,7 +100,7 @@ class LoginTest extends TestCase
             'password' => $this->testPassword,
         ];
 
-        $this->post('/api/login', $credentials)
+        $this->makeRequest($credentials)
             ->assertJsonFragment([
                 'token_type' => 'Bearer'
             ]);
@@ -113,7 +113,7 @@ class LoginTest extends TestCase
             'password' => $this->testPassword,
         ];
 
-        $this->post('/api/login', $credentials)
+        $this->makeRequest($credentials)
             ->assertJsonStructure([
                 'token',
             ]);
@@ -126,9 +126,13 @@ class LoginTest extends TestCase
             'password' => $this->testPassword,
         ];
 
-        $this->post('/api/login', $credentials)
+        $this->makeRequest($credentials)
             ->assertJsonStructure([
                 'expires_at',
             ]);
+    }
+
+    private function makeRequest(array $credentials) {
+        return $this->json('POST', '/api/login', $credentials);
     }
 }
