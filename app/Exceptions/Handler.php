@@ -3,17 +3,19 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
      * @var array
      */
     protected $dontReport = [
-        //
+
     ];
 
     /**
@@ -27,29 +29,22 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
-     *
-     * @param  \Throwable  $exception
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public function report(Throwable $exception)
-    {
-        parent::report($exception);
-    }
-
-    /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @param Throwable $exception
      *
-     * @throws \Throwable
+     * @return Response
+     * @throws Throwable
      */
-    public function render($request, Throwable $exception)
-    {
+    public function render ($request, Throwable $exception) {
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'message' => 'Данные неверные',
+                'errors'  => $exception->errors(),
+            ]);
+        }
+
         return parent::render($request, $exception);
     }
 }
