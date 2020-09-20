@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ class Handler extends ExceptionHandler {
             return response()->json([
                 'message' => 'Данные неверные',
                 'errors'  => $exception->errors(),
-            ]);
+            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return parent::render($request, $exception);
