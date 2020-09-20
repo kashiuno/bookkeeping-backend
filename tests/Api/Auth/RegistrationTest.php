@@ -16,6 +16,7 @@ class RegistrationTest extends TestCase
     private const TEST_VALID_EMAIL = 'taigus@gmail.com';
     private const TEST_VALID_PASSWORD = 'd549769e';
     private const TEST_VALID_PASSWORD_CONFIRMATION = 'd549769e';
+    private const TEST_INVALID_PASSWORD_CONFIRMATION = 'd54545';
 
     private const TEST_INVALID_EXISTING_NAME = 'kashiuno';
 
@@ -66,13 +67,13 @@ class RegistrationTest extends TestCase
 
         $this->makeRequest($credentials)
             ->assertJsonFragment([
-                'message' => 'The given data was invalid.'
+                'message' => 'Данные неверные'
             ])
             ->assertJsonFragment([
                 'errors' => [
-                    'name' => ['Field name is required'],
-                    'email' => ['Field email is required'],
-                    'password' => ['Field password is required'],
+                    'name' => ['Имя не заполнено'],
+                    'email' => ['E-mail не заполнен'],
+                    'password' => ['Пароль не заполнен'],
                 ]
             ]);
     }
@@ -89,7 +90,7 @@ class RegistrationTest extends TestCase
         $this->makeRequest($credentials)
             ->assertJsonFragment([
                 'errors' => [
-                    'name' => ['Name must be an unique']
+                    'name' => ['Имя должно быть уникальным']
                 ]
             ]);
     }
@@ -97,10 +98,10 @@ class RegistrationTest extends TestCase
     public function testShouldReturn_422ResponseIfValidationFail()
     {
         $credentials = [
-            'name' => self::TEST_INVALID_EXISTING_NAME,
+            'name' => self::TEST_VALID_NAME,
             'email' => self::TEST_VALID_EMAIL,
             'password' => self::TEST_VALID_PASSWORD,
-            'password_confirmation' => self::TEST_VALID_PASSWORD_CONFIRMATION,
+            'password_confirmation' => self::TEST_INVALID_PASSWORD_CONFIRMATION,
         ];
 
         $this->makeRequest($credentials)

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\RegisterFormRequest;
+use App\Http\Requests\Auth\RegisterFormRequest;
 use App\User;
 use Illuminate\Http\JsonResponse;
 
