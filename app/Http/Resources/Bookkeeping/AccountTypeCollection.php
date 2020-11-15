@@ -4,15 +4,10 @@ namespace App\Http\Resources\Bookkeeping;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class AccountTypeCollection extends ResourceCollection {
-    /**
-     * Transform the resource collection into an array.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return array
-     */
-    public function toArray ($request) {
+class AccountTypeCollection extends ResourceCollection
+{
+    public function toArray($request)
+    {
         return [
             'data' => $this->collection,
         ];

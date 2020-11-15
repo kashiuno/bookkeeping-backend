@@ -15,25 +15,39 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')
-     ->get('/user', function (Request $request) {
-         return $request->user();
-     })
+     ->get(
+         '/user',
+         function (Request $request) {
+             return $request->user();
+         }
+     )
 ;
 
-Route::group(['namespace' => 'Auth'], function () {
-    Route::post('register', 'RegisterController');
-    Route::post('login', 'LoginController');
-    Route::post('logout', 'LogoutController')
-         ->middleware('auth:api')
-    ;
-});
-
-Route::group(['namespace' => 'Bookkeeping'], function () {
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::apiResource('/account_type', 'AccountTypeController')
-             ->except([
-                 'show',
-             ])
+Route::group(
+    ['namespace' => 'Auth'],
+    function () {
+        Route::post('register', 'RegisterController');
+        Route::post('login', 'LoginController');
+        Route::post('logout', 'LogoutController')
+             ->middleware('auth:api')
         ;
-    });
-});
+    }
+);
+
+Route::group(
+    ['namespace' => 'Bookkeeping'],
+    function () {
+        Route::group(
+            ['middleware' => 'auth:api'],
+            function () {
+                Route::apiResource('/account_types', 'AccountTypeController')
+                     ->except(
+                         [
+                             'show',
+                         ]
+                     )
+                ;
+            }
+        );
+    }
+);
