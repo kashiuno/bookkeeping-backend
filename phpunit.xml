@@ -5,11 +5,11 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="AuthUnitTests">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
         <testsuite name="AuthApiTests">
-            <directory suffix="Test.php">./tests/Api</directory>
+            <directory suffix="Test.php">./tests/Api/Auth</directory>
+        </testsuite>
+        <testsuite name="AccountTypesApiTests">
+            <directory suffix="Test.php">./tests/Api/Bookkeeping/AccountType</directory>
         </testsuite>
     </testsuites>
     <filter>
