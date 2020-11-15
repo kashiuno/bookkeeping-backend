@@ -54,8 +54,7 @@ class LoginTest extends TestCase
 
         $this->makeRequest($credentials)
             ->assertExactJson([
-                'message' => 'Login or password are incorrect',
-                'errors' => 'Unauthorised',
+                'message' => 'Логин или пароль не верные',
             ]);
     }
 
@@ -78,8 +77,7 @@ class LoginTest extends TestCase
 
         $this->makeRequest($credentials)
             ->assertExactJson([
-                'message' => 'Login or password are incorrect',
-                'errors' => 'Unauthorised'
+                'message' => 'Логин или пароль не верные',
             ]);
     }
 
