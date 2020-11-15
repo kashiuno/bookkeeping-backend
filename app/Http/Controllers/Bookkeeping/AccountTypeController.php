@@ -7,94 +7,79 @@ use App\Http\Requests\Bookkeeping\AccountTypeRequest;
 use App\Http\Resources\Bookkeeping\AccountTypeCollection;
 use App\Models\Bookkeeping\AccountType;
 use Exception;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
-class AccountTypeController extends Controller {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AccountTypeCollection
-     */
-    public function index () {
-        return new AccountTypeCollection(AccountType::all());
+class AccountTypeController extends Controller
+{
+    public function index(): AccountTypeCollection
+    {
+        return new AccountTypeCollection(
+            AccountType::where('user_id', Auth::id())
+                       ->get()
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param AccountTypeRequest $request
-     *
-     * @return JsonResponse
-     */
-    public function store (AccountTypeRequest $request) {
-        AccountType::create($request->only(['name']));
+    public function store(AccountTypeRequest $request): JsonResponse
+    {
+        AccountType::create(array_merge($request->only('name'), ['user_id' => Auth::id()]));
 
-        return response()->json([
-            'message' => 'Тип счета успешно создан.',
-        ]);
+        return response()->json(
+            [
+                'message' => 'Тип счета успешно создан',
+            ],
+            JsonResponse::HTTP_CREATED
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param AccountTypeRequest $request
-     * @param AccountType $accountType
-     *
-     * @return JsonResponse
-     */
-    public function update (AccountTypeRequest $request, AccountType $accountType) {
-        try {
-            $this->tryFillModel($request, $accountType);
-
-            return response()->json([
-                'message' => 'Изменение типа счета произошло успешно.',
-            ]);
-        } catch (MassAssignmentException $e) {
-            return response()->json([
-                'message' => 'Ошибка сервера',
-            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+    public function update(AccountTypeRequest $request, AccountType $accountType): JsonResponse
+    {
+        if (!$accountType->isMutableByCurrentUser()) {
+            return $this->getForbiddenResponse();
         }
+
+        $accountType->fill($request->only('name'))
+                    ->save()
+        ;
+
+        return response()->json(
+            [
+                'message' => 'Изменение типа счета произошло успешно',
+            ]
+        );
     }
 
-    /**
-     * @param AccountTypeRequest $request
-     * @param AccountType $accountType
-     */
-    private function tryFillModel (AccountTypeRequest $request, AccountType $accountType) {
-        $accountType->fill([
-            'name' => $request->only(['name']),
-        ]);
-    }
+    public function destroy(AccountType $accountType): JsonResponse
+    {
+        if (!$accountType->isMutableByCurrentUser()) {
+            return $this->getForbiddenResponse();
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param AccountType $accountType
-     *
-     * @return JsonResponse
-     */
-    public function destroy (AccountType $accountType) {
         try {
-            $this->tryDelete($accountType);
+            $accountType->delete();
 
-            return response()->json([
-                'message' => 'Удаление произошло успешно.',
-            ]);
+            return response()->json(
+                [
+                    'message' => 'Удаление произошло успешно',
+                ]
+            );
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Не верный идентификатор типа счета.',
-            ]);
+            return response()->json(
+                [
+                    'message' => 'Не верный идентификатор типа счета',
+                ],
+                JsonResponse::HTTP_NOT_FOUND,
+            );
         }
     }
 
-    /**
-     * @param AccountType $accountType
-     *
-     * @return bool|null
-     * @throws Exception
-     */
-    private function tryDelete (AccountType $accountType) {
-        return $accountType->delete();
+    private function getForbiddenResponse(): JsonResponse
+    {
+        return response()->json(
+            [
+                'message' => 'Нет доступа к данному типу счета',
+            ],
+            JsonResponse::HTTP_FORBIDDEN
+        );
     }
 }
