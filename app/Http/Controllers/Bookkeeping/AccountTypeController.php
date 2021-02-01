@@ -4,20 +4,17 @@ namespace App\Http\Controllers\Bookkeeping;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bookkeeping\AccountTypeRequest;
-use App\Http\Resources\Bookkeeping\AccountTypeCollection;
 use App\Models\Bookkeeping\AccountType;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AccountTypeController extends Controller
 {
-    public function index(): AccountTypeCollection
+    public function index()
     {
-        return new AccountTypeCollection(
-            AccountType::where('user_id', Auth::id())
-                       ->get()
-        );
+        return Auth::user()->accountTypes;
     }
 
     public function store(AccountTypeRequest $request): JsonResponse
@@ -34,8 +31,8 @@ class AccountTypeController extends Controller
 
     public function update(AccountTypeRequest $request, AccountType $accountType): JsonResponse
     {
-        if (!$accountType->isMutableByCurrentUser()) {
-            return $this->getForbiddenResponse();
+        if (!Gate::allows('update-account-type', $accountType)) {
+            abort(403);
         }
 
         $accountType->fill($request->only('name'))
@@ -51,8 +48,8 @@ class AccountTypeController extends Controller
 
     public function destroy(AccountType $accountType): JsonResponse
     {
-        if (!$accountType->isMutableByCurrentUser()) {
-            return $this->getForbiddenResponse();
+        if (!Gate::allows('update-account-type', $accountType)) {
+            abort(403);
         }
 
         try {
@@ -71,15 +68,5 @@ class AccountTypeController extends Controller
                 JsonResponse::HTTP_NOT_FOUND,
             );
         }
-    }
-
-    private function getForbiddenResponse(): JsonResponse
-    {
-        return response()->json(
-            [
-                'message' => 'Нет доступа к данному типу счета',
-            ],
-            JsonResponse::HTTP_FORBIDDEN
-        );
     }
 }

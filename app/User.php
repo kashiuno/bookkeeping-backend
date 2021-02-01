@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Bookkeeping\AccountType;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -27,4 +28,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+    public function accountTypes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AccountType::class);
+    }
 }
