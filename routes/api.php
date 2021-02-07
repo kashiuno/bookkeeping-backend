@@ -47,6 +47,7 @@ Route::group(
                          ]
                      )
                 ;
+                Route::apiResource('/accounts', 'AccountController');
             }
         );
     }

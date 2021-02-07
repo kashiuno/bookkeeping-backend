@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Bookkeeping\Account;
 use App\Models\Bookkeeping\AccountType;
 use App\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -30,12 +31,19 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::routes();
 
-        $this->definedAccountTypesGates();
+        $this->defineAccountTypesGates();
+        $this->defineAccountsGates();
     }
 
-    private function definedAccountTypesGates(): void {
+    private function defineAccountTypesGates(): void {
         Gate::define('update-account-type', function (User $user, AccountType $accountType) {
             return $user->id == $accountType->user_id;
+        });
+    }
+
+    private function defineAccountsGates(): void {
+        Gate::define('update-account', function (User $user, Account $account) {
+            return $user->id == $account->user_id;
         });
     }
 }
