@@ -33,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->defineAccountTypesGates();
         $this->defineAccountsGates();
+        $this->defineOperationsGate();
     }
 
     private function defineAccountTypesGates(): void {
@@ -44,6 +45,12 @@ class AuthServiceProvider extends ServiceProvider
     private function defineAccountsGates(): void {
         Gate::define('update-account', function (User $user, Account $account) {
             return $user->id == $account->user_id;
+        });
+    }
+
+    private function defineOperationsGate(): void {
+        Gate::define('show-operation', function (User $user, Operation $operation) {
+            return $user->id == $operation->user_id;
         });
     }
 }

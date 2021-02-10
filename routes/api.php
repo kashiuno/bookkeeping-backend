@@ -48,6 +48,10 @@ Route::group(
                      )
                 ;
                 Route::apiResource('/accounts', 'AccountController');
+                Route::apiResource('/operations', 'OperationController')
+                     ->only(['index', 'store', 'show']);
+                Route::post('/operations/enroll', 'OperationController@enrollMoney');
+                Route::post('/operations/withdraw', 'OperationController@withdrawMoney');
             }
         );
     }
