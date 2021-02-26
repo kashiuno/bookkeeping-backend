@@ -1,0 +1,10 @@
+FROM mysql:5.7
+
+ENV MYSQL_ROOT_PASSWORD root
+ENV MYSQL_DATABASE mysql
+ENV MYSQL_USER mysql
+ENV MYSQL_PASSWORD mysql
+
+EXPOSE 3306
+
+CMD bash -c "chown -R mysql:mysql /var/log/mysql && exec /entrypoint.sh mysqld"
