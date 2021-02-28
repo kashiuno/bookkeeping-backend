@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Bookkeeping;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bookkeeping\AccountTypeRequest;
 use App\Models\Bookkeeping\AccountType;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -46,27 +45,25 @@ class AccountTypeController extends Controller
         );
     }
 
-    public function destroy(AccountType $accountType): JsonResponse
+    public function destroy(AccountType $accountType)
     {
         if (!Gate::allows('update-account-type', $accountType)) {
             abort(403);
         }
-
-        try {
+        if (!$accountType->accounts->toArray()) {
             $accountType->delete();
-
+        } else {
             return response()->json(
                 [
-                    'message' => 'Удаление произошло успешно',
+                    'message' => "Тип счета [$accountType->name] имеет зависимые счета, удаление не возможно",
                 ]
             );
-        } catch (Exception $e) {
-            return response()->json(
-                [
-                    'message' => 'Не верный идентификатор типа счета',
-                ],
-                JsonResponse::HTTP_NOT_FOUND,
-            );
         }
+
+        return response()->json(
+            [
+                'message' => 'Удаление произошло успешно',
+            ]
+        );
     }
 }
