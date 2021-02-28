@@ -25,7 +25,7 @@ class OperationController extends Controller
         $operation = new Operation();
         $operation->account_id = $account_id;
         $operation->amount = $request->post('amount');
-        $operation->incoming = $request->post('incoming');
+        $operation->incoming = $request->post('incoming', true);
         $operation->description = $request->post('description');
         $operation->user_id = Auth::id();
 
