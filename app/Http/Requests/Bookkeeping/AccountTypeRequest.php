@@ -30,9 +30,9 @@ class AccountTypeRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Поле имя обязательно для заполнения',
-            'name.max'      => 'Поле имя не должно быть больше 50 символов',
-            'name.unique'   => 'Поле имя должно быть уникальным',
+            'name.required' => 'Поле Название обязательно для заполнения',
+            'name.max'      => 'Поле Название не должно быть больше 50 символов',
+            'name.unique'   => 'Поле Название должно быть уникальным',
         ];
     }
 }
