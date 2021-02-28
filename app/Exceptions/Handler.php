@@ -7,9 +7,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
-class Handler extends ExceptionHandler {
+class Handler extends ExceptionHandler
+{
     /**
      * A list of the exception types that are not reported.
      *
@@ -33,19 +35,35 @@ class Handler extends ExceptionHandler {
      * Render an exception into an HTTP response.
      *
      * @param Request $request
-     * @param Throwable $exception
+     * @param Throwable $e
      *
-     * @return Response
+     * @return JsonResponse
      * @throws Throwable
      */
-    public function render ($request, Throwable $exception) {
-        if ($exception instanceof ValidationException) {
-            return response()->json([
-                'message' => 'Данные неверные',
-                'errors'  => $exception->errors(),
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+    public function render($request, Throwable $e): JsonResponse
+    {
+        if ($e instanceof ValidationException) {
+            return response()->json(
+                [
+                    'message' => 'Данные неверные',
+                    'errors'  => $e->errors(),
+                ],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+        if ($e instanceof HttpException) {
+            return response()->json(
+                [
+                    'message' => 'Ошибка',
+                ],
+                $e->getStatusCode()
+            );
         }
 
-        return parent::render($request, $exception);
+        return response()->json(
+            [
+                'message' => 'Возникла внутренняя ошибка сервера',
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+        );
     }
 }
